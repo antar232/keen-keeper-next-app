@@ -1,11 +1,52 @@
-
+import Image from "next/image";
+import logoImg from "@/components/image/assets/logo.png";
+import MyLink from "./MyLink";
+import { Home, Clock, BarChart2 } from "lucide-react"; // Import icons
 
 const Navbar = () => {
-    return (
-        <div>
-            fuck
-        </div>
-    );
+  const navItems = [
+    {
+      path: "/",
+      text: "Home",
+      icon: <Home size={18} />,
+    },
+    {
+      path: "/timeline",
+      text: "Timeline",
+      icon: <Clock size={18} />,
+    },
+    {
+      path: "/stats",
+      text: "Stats",
+      icon: <BarChart2 size={18} />,
+    }
+  ];
+
+  return (
+    <nav className="flex items-center justify-between px-10 py-3 bg-white border-b border-gray-100">
+      {/* Logo Section */}
+      <div className="flex items-center">
+        <Image
+          src={logoImg}
+          alt="keen keeper"
+          width={80} // Adjusted for a sleeker look
+          height={80}
+          className="object-contain"
+        />
+      </div>
+
+      {/* Navigation Links */}
+      <ul className="flex items-center gap-6">
+        {navItems.map((item, index) => (
+          <li key={index}>
+            <MyLink href={item.path} icon={item.icon}>
+              {item.text}
+            </MyLink>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
 };
 
 export default Navbar;
