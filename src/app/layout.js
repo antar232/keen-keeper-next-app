@@ -2,6 +2,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
+// 1. InteractionProvider import korun
+import { InteractionProvider } from "@/components/context/InteractionContext"; 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,10 +29,17 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar/>
-        {children}
-        <Footer/>
-        </body>
+        {/* 2. Full application-ke InteractionProvider diye wrap korun */}
+        <InteractionProvider>
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+          {/* 3. ToastContainer ekhane thaka bhalo jate shob page theke kaj kore */}
+          <ToastContainer position="top-right" autoClose={2000} />
+        </InteractionProvider>
+      </body>
     </html>
   );
 }

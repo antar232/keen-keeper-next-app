@@ -1,159 +1,138 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import Image from "next/image";
-// React Icons (Fa use korle better consistency thake)
-import { FaPhone, FaComment, FaVideo, FaTrash, FaArchive, FaClock } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useInteractions } from "@/components/context/InteractionContext"; 
+
+import { FaPhone, FaComment, FaVideo, FaClock, FaTrash, FaArchive } from "react-icons/fa";
 
 export default function FriendDetails({ params }) {
-  // Unwrapping params safely
   const { id } = use(params);
+  const { interactions, addInteraction } = useInteractions(); 
+
   const [friend, setFriend] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Public folder theke fetch korle path "/friends.json" hobe
         const res = await fetch("/friends.json");
         const data = await res.json();
-
         const found = data.find((f) => f.id.toString() === id);
         setFriend(found || null);
-      } catch (error) {
-        console.error("Data load korte somossya hoyeche:", error);
+      } catch (err) {
+        console.error("Error:", err);
       } finally {
         setLoading(false);
       }
     };
-
     loadData();
   }, [id]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
-      </div>
+  const handleAction = (type) => {
+    if (!friend) return;
+    const today = new Date().toLocaleDateString();
+    const isAlreadyDone = interactions.some(
+      (item) => item.person === friend.name && item.type === type && item.date === today
     );
-  }
 
-  if (!friend) {
-    return (
-      <div className="p-10 text-center">
-        <h2 className="text-2xl font-bold text-gray-800">Friend not found!</h2>
-        <p className="text-gray-500 mt-2">Check the ID or your data source.</p>
-      </div>
-    );
-  }
+    if (isAlreadyDone) {
+      toast.error(`${type} already recorded today!`, { theme: "colored" });
+      return;
+    }
+
+    addInteraction({
+      type,
+      person: friend.name,
+      date: today,
+    });
+
+    toast.success(`${type} recorded! Go to Timeline to see.`, { theme: "colored" });
+  };
+
+  if (loading) return <p className="p-10 text-center font-bold text-emerald-800">Loading...</p>;
+  if (!friend) return <p className="p-10 text-center">Friend not found!</p>;
 
   return (
-   <div className="bg-gray-100">
-     <div className="max-w-5xl mx-auto p-4 md:p-8 bg-gray-100 min-h-screen">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-
-        {/* LEFT COLUMN: Profile & Actions */}
+    <div className="min-h-screen bg-gray-100 p-6">
+      <ToastContainer />
+      <div className="max-w-5xl mx-auto grid md:grid-cols-12 gap-6">
+        
+    
         <div className="md:col-span-4 space-y-4">
-          <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-gray-100">
-            {/* Image Section */}
-            <div className="w-28 h-28 mx-auto mb-4 relative border-4 border-emerald-50 rounded-full shadow-sm">
-              <Image
-                src={friend.picture || "https://via.placeholder.com/150"}
-                alt={friend.name}
-                fill
-                className="rounded-full object-cover"
-              />
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
+            <div className="relative w-28 h-28 mx-auto mb-4">
+              <Image src={friend.picture} alt={friend.name} fill className="rounded-full object-cover border-4 border-slate-50 shadow-sm" />
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800">{friend.name}</h2>
+            
+            <div className="flex flex-col items-center gap-2 mt-3">
+               <span className="bg-red-500 text-white text-[10px] px-3 py-0.5 rounded-full font-bold uppercase tracking-wider">Overdue</span>
+               <span className="bg-emerald-100 text-emerald-700 text-[10px] px-3 py-0.5 rounded-full font-bold uppercase tracking-wider">Family</span>
             </div>
 
-            <h2 className="font-bold text-2xl text-slate-800">
-              {friend.name}
-            </h2>
-
-            {/* Status & Bio */}
-            <div className="flex flex-col items-center gap-2 mt-2">
-               <span className={`px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                 friend.status?.toLowerCase() === 'overdue' ? 'bg-red-500 text-white' : 'bg-emerald-800 text-white'
-               }`}>
-                {friend.status}
-              </span>
-              <p className="text-gray-400 text-sm italic mt-3 line-clamp-2 px-2">
-                {friend.bio || "Relationship built on shared interests and professional growth."}
-              </p>
-              <p className="text-[10px] text-gray-400 mt-2 uppercase">Preferred: {friend.preferred || "Email"}</p>
-            </div>
+            <p className="text-slate-500 text-sm mt-4 italic">"{friend.bio || "Former colleague, great mentor"}"</p>
+            <p className="text-slate-400 text-[10px] mt-2 font-semibold uppercase">Preferred: email</p>
           </div>
 
-          {/* Action Buttons */}
           <div className="space-y-3">
-            <button className="w-full bg-white py-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center gap-3 font-semibold text-slate-700 hover:bg-gray-50 transition">
-              <FaClock className="text-gray-400" /> Snooze 2 Weeks
+            <button className="w-full bg-white py-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center gap-3 font-semibold text-slate-700 hover:bg-slate-50 transition">
+              <FaClock className="text-slate-400" /> Snooze 2 Weeks
             </button>
-            <button className="w-full bg-white py-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center gap-3 font-semibold text-slate-700 hover:bg-gray-50 transition">
-              <FaArchive className="text-gray-400" /> Archive
+            <button className="w-full bg-white py-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center gap-3 font-semibold text-slate-700 hover:bg-slate-50 transition">
+              <FaArchive className="text-slate-400" /> Archive
             </button>
-            <button className="w-full bg-white py-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center gap-3 font-semibold text-red-500 hover:bg-red-50 transition">
+            <button className="w-full bg-white py-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center gap-3 font-semibold text-red-500 hover:bg-red-50 transition">
               <FaTrash /> Delete
             </button>
           </div>
         </div>
-
-        {/* RIGHT COLUMN: Stats & Tools */}
+      
         <div className="md:col-span-8 space-y-6">
           
-          {/* Stats Boxes */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white p-6 rounded-2xl text-center shadow-sm border border-gray-100">
-              <h3 className="text-3xl font-bold text-emerald-900">{friend.days_since_contact}</h3>
-              <p className="text-xs font-medium text-gray-400 mt-1 uppercase tracking-tighter">Days Since Contact</p>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
+              <p className="text-3xl font-bold text-emerald-900">{friend.days_since_contact || "62"}</p>
+              <p className="text-[10px] uppercase font-bold text-gray-400 mt-1">Days Since Contact</p>
             </div>
-            <div className="bg-white p-6 rounded-2xl text-center shadow-sm border border-gray-100">
-              <h3 className="text-3xl font-bold text-emerald-900">{friend.goal}</h3>
-              <p className="text-xs font-medium text-gray-400 mt-1 uppercase tracking-tighter">Goal (Days)</p>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
+              <p className="text-3xl font-bold text-emerald-900">{friend.goal || "30"}</p>
+              <p className="text-[10px] uppercase font-bold text-gray-400 mt-1">Goal (Days)</p>
             </div>
-            <div className="bg-white p-6 rounded-2xl text-center shadow-sm border border-gray-100">
-              <h3 className="text-xl font-bold text-emerald-700">
-                {friend.next_due_date || "Feb 27, 2026"}
-              </h3>
-              <p className="text-xs font-medium text-gray-400 mt-1 uppercase tracking-tighter">Next Due</p>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
+              <p className="text-2xl font-bold text-emerald-900">{friend.next_due_date || "Feb 27, 2026"}</p>
+              <p className="text-[10px] uppercase font-bold text-gray-400 mt-1 text-nowrap">Next Due</p>
             </div>
           </div>
 
-          {/* Goal Settings */}
-          <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
-            <button className="absolute right-6 top-8 text-[10px] bg-slate-50 border border-slate-200 px-3 py-1 rounded-md text-slate-500 font-bold hover:bg-slate-100 uppercase transition">
-              Edit
-            </button>
-            <h4 className="text-emerald-900 font-bold mb-3 text-lg">Relationship Goal</h4>
-            <p className="text-slate-600">
-              Connect every <span className="font-bold text-slate-900">{friend.goal} days</span>
-            </p>
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative">
+             <button className="absolute right-6 top-8 bg-slate-50 border border-slate-200 px-3 py-1 rounded text-[10px] font-bold text-slate-500 uppercase hover:bg-slate-100">Edit</button>
+             <h4 className="text-emerald-900 font-bold text-lg mb-2">Relationship Goal</h4>
+             <p className="text-slate-600 font-medium">Connect every <span className="font-bold text-slate-900">{friend.goal || "30"} days</span></p>
           </div>
 
-          {/* Interaction Methods */}
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-            <h3 className="font-bold mb-6 text-emerald-900 text-lg">
-              Quick Check-In
-            </h3>
+            <h3 className="font-bold mb-6 text-emerald-900 text-lg">Quick Check-In</h3>
             <div className="grid grid-cols-3 gap-4">
-              <button className="group p-6 border border-slate-50 bg-slate-50 rounded-2xl flex flex-col items-center gap-3 hover:bg-emerald-50 hover:border-emerald-100 transition duration-300">
-                <FaPhone size={20} className="text-emerald-800 group-hover:scale-110 transition" />
-                <span className="text-sm font-semibold text-slate-700">Call</span>
-              </button>
-              <button className="group p-6 border border-slate-50 bg-slate-50 rounded-2xl flex flex-col items-center gap-3 hover:bg-emerald-50 hover:border-emerald-100 transition duration-300">
-                <FaComment size={20} className="text-emerald-800 group-hover:scale-110 transition" />
-                <span className="text-sm font-semibold text-slate-700">Text</span>
-              </button>
-              <button className="group p-6 border border-slate-50 bg-slate-50 rounded-2xl flex flex-col items-center gap-3 hover:bg-emerald-50 hover:border-emerald-100 transition duration-300">
-                <FaVideo size={20} className="text-emerald-800 group-hover:scale-110 transition" />
-                <span className="text-sm font-semibold text-slate-700">Video</span>
-              </button>
+              {["Call", "Text", "Video"].map((action) => (
+                <button
+                  key={action}
+                  onClick={() => handleAction(action)}
+                  className="p-6 bg-slate-50 rounded-2xl flex flex-col items-center gap-3 hover:bg-emerald-50 transition border border-transparent hover:border-emerald-100 group"
+                >
+                  {action === "Call" && <FaPhone size={24} className="text-slate-700 group-hover:text-emerald-800" />}
+                  {action === "Text" && <FaComment size={24} className="text-slate-700 group-hover:text-emerald-800" />}
+                  {action === "Video" && <FaVideo size={24} className="text-slate-700 group-hover:text-emerald-800" />}
+                  <span className="text-sm font-semibold text-slate-600 group-hover:text-emerald-900">{action}</span>
+                </button>
+              ))}
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
-   </div>
   );
 }
