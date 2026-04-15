@@ -14,7 +14,7 @@ This project is built with a modern tech stack focused on performance, clean UI,
 * **Data Visualization:** [Recharts](https://recharts.org/)
 * **Icons:** React Icons (FontAwesome, Lucide)
 * **Notifications:** React-Toastify
-* **Deployment:** Vercel
+* **Deployment:** Netlify
 
 ---
 
