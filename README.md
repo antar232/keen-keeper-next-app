@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🛡️ KeenKeeper
 
-## Getting Started
+**KeenKeeper** is a smart relationship management tool designed to help you stay connected with the people who matter most. In the hustle of daily life, it’s easy to lose touch with friends and mentors; KeenKeeper ensures you never miss a follow-up.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Technologies Used
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This project is built with a modern tech stack focused on performance, clean UI, and real-time state management:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+* **Frontend Framework:** [Next.js 15+](https://nextjs.org/) (App Router)
+* **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+* **State Management:** React Context API (Interaction Provider)
+* **Data Visualization:** [Recharts](https://recharts.org/)
+* **Icons:** React Icons (FontAwesome, Lucide)
+* **Notifications:** React-Toastify
+* **Deployment:** Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ✨ Key Features
 
-To learn more about Next.js, take a look at the following resources:
+### 1. **Dynamic Relationship Tracker**
+Manage your entire friend circle with a logic-driven dashboard. Each friend card displays their current "Status" (On-Track, Almost Due, or Overdue) based on your custom contact goals, helping you prioritize who to reach out to first.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. **Interactive Friendship Analytics**
+Visualize your social habits through a sleek, interactive Pie Chart. The "Stats" page allows you to see the percentage breakdown of your interactions (Calls, Texts, Videos). Hover over segments to see real-time percentages and click to filter your history instantly.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. **Seamless Interaction Timeline**
+Log every catch-up with a single click. The project features a robust Timeline that records your interaction history, allowing you to search and filter through past connections to see exactly when and how you last stayed in touch.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

@@ -25,7 +25,7 @@ const TimeLine = () => {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-slate-800 mb-8">Timeline</h1>
 
-        {/* SEARCH & FILTER SECTION */}
+       
         <div className="relative mb-8 max-w-sm">
           <div 
             onClick={() => setIsOpen(!isOpen)}
@@ -37,7 +37,7 @@ const TimeLine = () => {
             <FaChevronDown className={`text-xs text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
           </div>
 
-          {/* Custom Dropdown Menu */}
+          
           {isOpen && (
             <div className="absolute z-10 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl py-2 animate-in fade-in slide-in-from-top-2">
               <div className="px-3 mb-2 relative">

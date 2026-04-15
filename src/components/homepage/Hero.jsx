@@ -1,29 +1,48 @@
+"use client";
+
 import React from "react";
 
-const Hero = () => {
+const Hero = ({ friends = [] }) => {
+  // 1. Total Friends calculation
+  const totalFriends = friends.length;
+
+  // 2. On Track calculation (Status 'on-track' check kora hocche)
+  const onTrackCount = friends.filter(
+    (f) => f.status?.toLowerCase() === "on-track"
+  ).length;
+
+  // 3. Need Attention calculation (Overdue ebong Almost Due milie)
+  const needAttentionCount = friends.filter(
+    (f) => 
+      f.status?.toLowerCase() === "overdue" || 
+      f.status?.toLowerCase() === "almost due"
+  ).length;
+
+  const interactionsThisMonth = friends.reduce((acc, curr) => acc + (curr.interactions_count || 0), 0) || totalFriends;
+
   const stats = [
-    { label: "Total Friends", value: 12 },
-    { label: "On Track", value: 3 },
-    { label: "Need Attention", value: 6 },
-    { label: "Interactions This Month", value: 12 },
+    { label: "Total Friends", value: totalFriends },
+    { label: "On Track", value: onTrackCount },
+    { label: "Need Attention", value: needAttentionCount },
+    { label: "Sync Status", value: `${Math.round((onTrackCount / totalFriends) * 100) || 0}%` },
   ];
 
   return (
     <div className="bg-gray-100">
       <div className="py-10 px-4 max-w-7xl mx-auto">
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center transition-transform hover:scale-[1.02]"
+              className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center transition-all hover:shadow-md hover:scale-[1.02]"
             >
-              {/* Value (Number) */}
-              <h2 className="text-4xl font-bold text-[#1e4638] mb-2">
+             
+              <h2 className="text-4xl font-black text-[#1e4638] mb-2 tracking-tighter">
                 {stat.value}
               </h2>
 
-              {/* Label */}
-              <p className="text-slate-500 font-medium text-sm md:text-base">
+             
+              <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">
                 {stat.label}
               </p>
             </div>

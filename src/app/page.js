@@ -4,7 +4,7 @@ import Cards from "@/components/friends/Cards";
 
 // Fetching friends data
 async function getFriends() {
-  const res = await fetch("http://localhost:3000/friends.json", { cache: 'no-store' });
+  const res = await fetch("http://localhost:3000/friends.json");
   if (!res.ok) return [];
   return res.json();
 }

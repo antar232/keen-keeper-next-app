@@ -21,7 +21,7 @@ const Banner = () => {
         <span>Add a Friend</span>
       </button>
       
-      {/* Optional: Bottom Divider or Border */}
+      
       <div className="w-full max-w-5xl mt-16 border-b border-gray-100"></div>
     </div>
   );
